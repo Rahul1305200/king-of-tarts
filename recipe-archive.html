@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>King of Tarts Recipes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playball&family=Lora:ital,wght@0,400;0,500;0,700;1,400&family=Roboto:wght@400;500;600;700&display=swap">
+
+<style>
+/* Layout: full-bleed horizontal bands on the site's 60px / 16px gutter rhythm; the recipe grid auto-fills
+   the whole viewport width. Type is FIXED px at every breakpoint, exactly as the home page sets it. */
+:root{
+  /* --- colour, as measured on the home page --- */
+  --mint:#9ECCBC;
+  --amber:#EC9F2E;
+  --cream:#FFFDD0;
+  --black:#000000;
+  --btn-dark:#333333;
+  --dark-surface:#262626;
+  --white:#FFFFFF;
+  /* working neutrals, warmed toward the cream */
+  --line:#E7E5D6;
+  --rule:#EEEEEE;          /* header hairline on the live site */
+  --grey-band:#EEEEEE;     /* archive page-title band on the live site */
+  --mint-wash:#EDF6F2;
+  --cream-deep:#F5F2BE;
+  --muted:#6B6B62;
+
+  /* --- families --- */
+  --display:'Playball', cursive;          /* 400 only on Google Fonts; site declares 700 (synthetic) */
+  --body:'Roboto', -apple-system, 'Segoe UI', system-ui, sans-serif;
+  --chrome:'Lora', Georgia, 'Times New Roman', serif;
+
+  /* --- spacing rhythm --- */
+  --gutter:60px;
+  --section-y:90px;
+  --content:1140px;        /* the home-page "Story Behind King of Tarts" content measure */
+  --sidebar:280px;
+
+  color-scheme: light;
+}
+@media (max-width:1024px){
+  :root{ --gutter:16px; --section-y:64px; }
+}
+
+*,*::before,*::after{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--white);
+  color:var(--black);
+  font-family:var(--body);
+  font-size:18px;
+  line-height:25px;
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+p{margin:0 0 10px}
+h1,h2,h3,h4{margin:0}
+a{color:inherit}
+img{display:block;max-width:100%}
+button{font-family:inherit;color:inherit}
+
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:2px}
+
+/* Bands are full-bleed; their content is capped at the home page's 1140px measure and centred,
+   so the background runs edge to edge while the type and cards hold a readable column. */
+.band{
+  width:100%;
+  max-width:calc(var(--content) + var(--gutter) * 2);
+  margin-inline:auto;
+  padding-inline:var(--gutter);
+}
+
+/* ============ TYPE TOKENS (fixed px, no scaling — matches the home page) ============ */
+.t-h1{font-family:var(--display);font-weight:700;font-size:64px;line-height:75px;text-transform:capitalize}
+.t-h2{font-family:var(--display);font-weight:700;font-size:50px;line-height:60px}
+.t-h3{font-family:var(--display);font-weight:700;font-size:45px;line-height:45px}
+.t-card-title{font-family:var(--body);font-weight:600;font-size:22px;line-height:32px}
+.t-eyebrow{font-family:var(--body);font-weight:700;font-size:18px;line-height:18px;letter-spacing:1px;color:var(--mint)}
+.t-nav{font-family:var(--chrome);font-weight:700;font-size:12px;line-height:17.14px;letter-spacing:1px;text-transform:uppercase}
+
+/* ============ BUTTONS — the five home-page variants ============ */
+.btn{
+  display:inline-block;
+  font-family:var(--body);
+  text-transform:none;letter-spacing:normal;text-decoration:none;
+  border-radius:30px;
+  transition:.3s;
+  cursor:pointer;
+  text-align:center;
+}
+/* A — primary filled ("Get the Recipes") */
+.btn-a{font-weight:500;font-size:20px;line-height:20px;padding:16px 30px;
+  background:var(--mint);color:var(--white);border:2px solid var(--mint)}
+.btn-a:hover,.btn-a:focus-visible{background:var(--white);color:var(--btn-dark)}
+/* B — ghost ("Start Baking") */
+.btn-b{font-weight:500;font-size:20px;line-height:20px;padding:16px 30px;
+  background:var(--white);color:var(--btn-dark);border:2px solid var(--mint)}
+.btn-b:hover,.btn-b:focus-visible{background:var(--mint);color:var(--white)}
+/* C — card action ("View Recipes") */
+.btn-c{font-weight:600;font-size:17px;line-height:17px;padding:15px 30px;
+  background:var(--mint);color:var(--white);border:1px solid var(--mint)}
+.btn-c:hover,.btn-c:focus-visible{background:var(--white);color:var(--btn-dark);border-color:var(--mint)}
+/* D — plain white ("Discover the Story", "Join me") — hover borrowed from B, live site's is broken */
+.btn-d{font-weight:500;font-size:20px;line-height:20px;padding:14px 28px;
+  background:var(--white);color:var(--btn-dark);border:0}
+.btn-d:hover,.btn-d:focus-visible{background:var(--mint);color:var(--white)}
+/* E — form submit ("Subscribe") — the only non-pill radius on the site */
+.btn-e{
+  font-family:var(--chrome);font-weight:500;font-size:16px;line-height:24px;
+  padding:8px 20px;border-radius:7px;
+  background:var(--mint);color:var(--white);border:1px solid var(--mint);
+  transition:background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.btn-e:hover,.btn-e:focus-visible{background:var(--white);border-color:var(--mint);color:var(--btn-dark)}
+
+/* ================= SITE HEADER ================= */
+.utilitybar{background:var(--white);border-bottom:.8px solid var(--rule)}
+.utility{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  min-height:43px;padding-block:9px;
+}
+.utility-nav{display:flex;gap:26px;flex-wrap:wrap}
+.utility-nav a{
+  font-family:var(--chrome);font-weight:700;font-size:12px;line-height:17.14px;
+  letter-spacing:1px;text-transform:uppercase;text-decoration:none;color:var(--black);
+  white-space:nowrap;
+}
+.utility-right{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.social{display:flex;gap:13px;align-items:center}
+.social a{display:grid;place-items:center;color:var(--black);transition:color .3s}
+.social a:hover{color:var(--amber)}
+.social svg{width:14px;height:14px;fill:currentColor}
+
+.utility-search{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding-bottom:4px}
+.utility-search input{
+  border:0;background:transparent;outline:none;
+  font-family:var(--chrome);font-style:italic;font-size:12px;line-height:25px;
+  color:var(--black);width:min(200px,42vw);
+}
+.utility-search input::placeholder{color:var(--muted)}
+.utility-search svg{width:13px;height:13px;fill:var(--black)}
+
+/* Live-site header: a white-to-transparent gradient laid OVER the doodle, both at `cover`,
+   across the WHOLE header — logo strip + menu strip, 294px at desktop. The menu strip then
+   paints solid white over the lower part, so the fade never fully clears inside the visible
+   band. Putting the background on the logo strip alone makes the doodle read too strong. */
+.headerband{
+  background-color:transparent;
+  background-image:
+    linear-gradient(rgb(255,255,255), rgba(219,219,219,0)),
+    url("assets/brand/doodle.png");
+  background-size:cover, cover;
+  background-position:50% 50%, 50% 50%;
+  background-repeat:repeat, repeat;
+}
+.logoband{
+  min-height:200px;
+  display:grid;place-content:center;justify-items:center;gap:6px;
+  padding-block:24px;text-align:center;
+}
+.logoband img{width:415px;max-width:100%;height:auto}
+.logoband .tagline{
+  font-family:var(--chrome);font-weight:400;font-size:16px;line-height:25px;
+  color:var(--black);margin:0;
+}
+
+.navstrip{background:var(--white);min-height:90px;display:flex;align-items:center}
+.mainnav{
+  display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:0;
+  padding-block:0;
+}
+.mainnav a{
+  position:relative;padding:35px 40px;
+  font-family:var(--chrome);font-weight:700;font-size:14px;line-height:20px;
+  letter-spacing:0;text-transform:uppercase;text-decoration:none;color:var(--black);
+  white-space:nowrap;
+}
+.mainnav a::after{
+  content:"";position:absolute;left:40px;right:40px;bottom:26px;height:2px;
+  background:var(--amber);transform:scaleX(0);transform-origin:left;transition:transform .3s;
+}
+.mainnav a:hover::after,.mainnav a[aria-current="page"]::after{transform:scaleX(1)}
+.mainnav a[aria-current="page"]{color:var(--amber)}
+
+/* ================= ARCHIVE HERO ================= */
+.hero{position:relative;background:var(--grey-band);overflow:hidden}
+.hero-inner{position:relative;min-height:156px;display:grid;align-content:center;gap:2px;justify-items:center;text-align:center}
+.hero .kicker{
+  font-family:var(--chrome);font-weight:400;font-size:12px;line-height:25px;letter-spacing:3px;
+  color:#8F9294;margin:0;text-transform:uppercase;
+}
+.hero h1{font-family:var(--display);font-weight:500;font-size:35px;line-height:38.5px;letter-spacing:4px;text-transform:uppercase;color:var(--black)}
+
+/* ================= SIDEBAR ================= */
+/* A vertical category list instead of a chip row: the archive can grow to any number of
+   categories without clipping or a horizontal scroll. Sticky so it stays with the feed. */
+.sidebar{
+  position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow-y:auto;
+  display:flex;flex-direction:column;gap:22px;padding-right:10px;scrollbar-width:thin;
+}
+.side-title{
+  font-family:var(--chrome);font-weight:500;font-size:16px;line-height:19.2px;
+  color:var(--black);padding-bottom:12px;border-bottom:1px solid var(--line);
+}
+.catlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.cat{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-family:var(--chrome);font-weight:400;font-size:16px;line-height:25px;text-align:left;
+  padding:12px 22px;border-radius:30px;
+  background:transparent;color:var(--btn-dark);border:1px solid transparent;
+  cursor:pointer;transition:.3s;
+}
+.cat .n{font-weight:400;font-size:14px;opacity:.6;font-variant-numeric:tabular-nums}
+.cat:hover{background:var(--mint-wash);border-color:var(--mint)}
+.cat[aria-pressed="true"]{background:var(--mint);color:var(--white);border-color:var(--mint)}
+.cat[aria-pressed="true"] .n{opacity:.85}
+.cat[aria-pressed="true"]:hover{background:var(--white);color:var(--btn-dark)}
+
+.side-section + .side-section{margin-top:26px}
+.recent-list{list-style:none;margin:0;padding:0;display:grid;gap:20px}
+.recent-item a{
+  display:grid;grid-template-columns:88px minmax(0,1fr);gap:14px;align-items:center;
+  color:var(--black);text-decoration:none;
+}
+.recent-thumb{width:88px;height:65px;object-fit:cover;border-radius:3px}
+.recent-copy{min-width:0}
+.recent-title{
+  display:block;font-family:var(--chrome);font-weight:400;font-size:16px;line-height:22px;
+  transition:color .3s;
+}
+.recent-date{display:block;margin-top:3px;font-family:var(--chrome);font-size:14px;line-height:20px;color:var(--muted)}
+.recent-item a:hover .recent-title{color:var(--amber)}
+
+.toolsearch{position:relative;width:100%;min-width:0}
+.toolsearch input{
+  width:100%;font-family:var(--body);font-weight:400;font-size:17px;line-height:17px;
+  padding:14px 44px 14px 46px;
+  border:2px solid var(--mint);border-radius:30px;
+  background:var(--white);color:var(--black);outline:none;transition:.3s;
+}
+.toolsearch input::placeholder{color:var(--muted)}
+.toolsearch input:focus{box-shadow:0 0 0 4px rgba(158,204,188,.4)}
+.toolsearch .ico{position:absolute;left:19px;top:50%;transform:translateY(-50%);width:16px;height:16px;fill:var(--muted);pointer-events:none}
+.toolsearch .clear{
+  position:absolute;right:11px;top:50%;transform:translateY(-50%);
+  border:0;background:var(--rule);border-radius:30px;width:27px;height:27px;
+  display:none;place-items:center;cursor:pointer;transition:.3s;
+}
+.toolsearch .clear.on{display:grid}
+.toolsearch .clear:hover{background:var(--mint)}
+.toolsearch .clear svg{width:11px;height:11px;fill:var(--black)}
+
+.resultline{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding-bottom:18px;margin-bottom:10px;border-bottom:1px solid var(--line);
+  font-family:var(--body);font-weight:400;font-size:18px;line-height:25px;color:var(--black);
+}
+.resultline b{font-weight:700;font-variant-numeric:tabular-nums}
+.resultline .reset{
+  border:0;background:none;cursor:pointer;padding:0;
+  font-family:var(--body);font-weight:400;font-size:18px;line-height:25px;
+  color:var(--amber);border-bottom:1px solid var(--amber);display:none;transition:.3s;
+}
+.resultline .reset.on{display:inline-block}
+.resultline .reset:hover{color:var(--black);border-color:var(--black)}
+
+/* ================= FEED ================= */
+.feed{padding-block:var(--section-y) 0}
+.feedgrid{display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);gap:40px}
+.feedmain{min-width:0}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px 24px;align-items:stretch}
+
+.card{display:flex;flex-direction:column;height:100%;background:var(--white);animation:rise .5s cubic-bezier(.22,.8,.3,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+.card-media{position:relative;aspect-ratio:1140/660;overflow:hidden;background:var(--cream-deep);border-radius:3px}
+.card-media img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.22,.8,.3,1)}
+.card:hover .card-media img{transform:scale(1.06)}
+.card-media::after{
+  content:"";position:absolute;inset:auto 0 0 0;height:46%;
+  background:linear-gradient(to top,rgba(38,38,38,.42),transparent);opacity:0;transition:.3s;
+}
+.card:hover .card-media::after{opacity:1}
+
+.badges{position:absolute;top:12px;left:12px;right:12px;display:flex;flex-wrap:wrap;gap:7px}
+.badge{
+  font-family:var(--body);font-weight:700;font-size:13px;line-height:13px;letter-spacing:1px;
+  padding:7px 12px;border-radius:30px;background:var(--mint);color:var(--white);
+  box-shadow:0 2px 10px -4px rgba(38,38,38,.55);
+}
+.badge.amber{background:var(--amber);color:var(--white)}
+
+.card-share{
+  position:absolute;bottom:12px;right:12px;width:38px;height:38px;border-radius:30px;border:0;
+  background:var(--white);display:grid;place-items:center;cursor:pointer;
+  opacity:0;transform:translateY(6px);transition:.3s;
+}
+.card:hover .card-share,.card-share:focus-visible{opacity:1;transform:none}
+.card-share svg{width:15px;height:15px;fill:var(--btn-dark)}
+.card-share:hover{background:var(--mint)}
+.card-share:hover svg{fill:var(--white)}
+
+/* Every text row has a locked height, so each card in a row shares the same
+   baselines and the buttons land on one line across the whole grid. */
+.card-body{padding-top:16px;display:flex;flex-direction:column;flex:1 1 auto;min-width:0}
+
+.card-cats{
+  margin:0 0 10px;height:18px;
+  font-family:var(--body);font-weight:700;font-size:12px;line-height:18px;letter-spacing:1px;
+  text-transform:uppercase;color:var(--amber);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+.card h3{
+  margin:0 0 6px;height:64px;                    /* exactly two 32px lines */
+  font-family:var(--body);font-weight:600;font-size:22px;line-height:32px;color:var(--black);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-clamp:2;overflow:hidden;
+}
+.card h3 a{
+  text-decoration:none;
+  background-image:linear-gradient(var(--amber),var(--amber));
+  background-size:0% 2px;background-position:0 100%;background-repeat:no-repeat;
+  transition:background-size .3s;
+}
+.card:hover h3 a{background-size:100% 2px}
+
+.card-meta{
+  margin:0 0 10px;height:25px;
+  font-family:var(--body);font-weight:400;font-size:14px;line-height:25px;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.card-meta .sep{margin:0 7px;opacity:.6}
+.card-meta a{text-decoration:none;color:var(--muted);transition:.3s}
+.card-meta a:hover{color:var(--amber)}
+
+.card-excerpt{
+  margin:0 0 20px;height:75px;                   /* exactly three 25px lines */
+  font-size:18px;line-height:25px;color:var(--black);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;line-clamp:3;overflow:hidden;
+}
+.card-cta{margin-top:auto;align-self:flex-start}
+
+/* ---------- live-site related-posts feature, restyled to sit quietly in the archive ---------- */
+.related-posts{
+  grid-column:1/-1;padding:38px 0 42px;margin:4px 0 6px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.related-posts h2{
+  font-family:var(--display);font-weight:700;font-size:35px;line-height:42px;
+  text-align:center;margin-bottom:24px;
+}
+.related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.related-card a{display:block;text-decoration:none}
+.related-card img{display:block;width:100%;height:auto;aspect-ratio:1140/660;object-fit:cover;border-radius:3px}
+.related-card span{
+  display:block;margin-top:10px;font-family:var(--chrome);font-weight:400;font-size:16px;line-height:22px;
+  transition:color .3s;
+}
+.related-card a:hover span{color:var(--amber)}
+
+/* ---------- skeleton / loader / end / empty ---------- */
+.skel .card-media{background:linear-gradient(100deg,rgba(158,204,188,.62) 28%,var(--mint-wash) 46%,rgba(158,204,188,.62) 62%);background-size:300% 100%;animation:shimmer 1.4s linear infinite}
+.skel .ln{height:14px;border-radius:30px;background-image:linear-gradient(100deg,rgba(158,204,188,.62) 28%,var(--mint-wash) 46%,rgba(158,204,188,.62) 62%);background-size:300% 100%;animation:shimmer 1.4s linear infinite}
+.skel .ln.w70{width:70%}.skel .ln.w45{width:45%}.skel .ln.w90{width:90%}
+@keyframes shimmer{from{background-position:140% 0}to{background-position:-40% 0}}
+
+#sentinel{height:1px}
+.loadstate{display:none;place-items:center;gap:14px;padding-block:40px 56px;text-align:center}
+.loadstate.on{display:grid}
+.spinner{width:28px;height:28px;border-radius:30px;border:3px solid var(--mint);border-top-color:var(--amber);animation:spin .75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loadstate span{font-family:var(--body);font-weight:400;font-size:18px;line-height:25px;color:var(--muted)}
+
+.endcap{display:none;padding-block:52px;text-align:center;border-top:1px solid var(--line);margin-top:32px}
+.endcap.on{display:block}
+.endcap h3{font-family:var(--display);font-weight:700;font-size:45px;line-height:45px;margin-bottom:10px}
+.endcap p{margin:0 auto 24px;max-width:52ch;font-size:18px;line-height:25px}
+
+.empty{display:none;padding-block:var(--section-y);text-align:center}
+.empty.on{display:block}
+.empty .mark{font-family:var(--display);font-weight:700;font-size:64px;line-height:75px;color:var(--mint)}
+.empty h3{font-family:var(--display);font-weight:700;font-size:45px;line-height:45px;margin-bottom:10px}
+.empty p{margin:0 auto 24px;max-width:46ch;font-size:18px;line-height:25px}
+
+/* ================= FOOTER ================= */
+.footer{background:var(--dark-surface);color:var(--white);padding-block:60px 0;margin-top:0;font-family:var(--chrome)}
+.footer-logo{display:flex;justify-content:center;margin-bottom:40px}
+.footer-logo img{width:300px;height:auto}
+.footer-grid{display:grid;grid-template-columns:190px 250px minmax(0,1fr);gap:80px;padding-bottom:42px}
+.footer h4{font-family:var(--chrome);font-weight:500;font-size:16px;line-height:19.2px;color:var(--white);margin-bottom:18px}
+.footer ul{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.footer li a{
+  font-family:var(--chrome);font-weight:400;font-size:12px;line-height:25px;
+  text-decoration:none;color:var(--white);display:inline-block;transition:.3s;
+}
+.footer li a:hover{color:var(--amber)}
+.footer-newsletter{display:grid;gap:0;align-content:start}
+.footer-newsletter input[type="email"]{
+  width:100%;height:41px;border:0;border-radius:7px;padding:11px 15px;
+  background:var(--white);color:var(--black);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-weight:400;font-size:13px;line-height:13px;
+}
+.footer-newsletter input[type="email"]::placeholder{color:#89909A;opacity:1}
+.footer-consent{
+  display:flex;align-items:center;gap:10px;margin:20px 0;
+  font-family:var(--chrome);font-weight:700;font-size:14px;line-height:25px;color:var(--white);
+}
+.footer-consent input{
+  appearance:none;width:13px;height:13px;flex:0 0 13px;margin:0;
+  border:1px solid #D7D7D7;border-radius:1px;background:var(--white);opacity:1;
+}
+.footer-subscribe{
+  width:100%;height:40px;border:0;border-radius:7px;padding:8px 20px;
+  background:var(--mint);color:var(--white);opacity:1;
+  font-family:var(--chrome);font-weight:500;font-size:13px;line-height:20px;
+}
+.footer-base{
+  border-top:1px solid var(--white);padding-block:26px 48px;text-align:center;
+  font-family:var(--chrome);font-weight:400;font-size:12px;line-height:25px;color:var(--white);
+}
+
+/* ================= back to top + toast ================= */
+.totop{
+  position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom, 0px));z-index:50;
+  width:52px;height:52px;border-radius:30px;border:2px solid var(--mint);
+  background:var(--mint);display:grid;place-items:center;cursor:pointer;
+  opacity:0;pointer-events:none;transform:translateY(12px);transition:.3s;
+  box-shadow:0 10px 26px -12px rgba(38,38,38,.75);
+}
+.totop.on{opacity:1;pointer-events:auto;transform:none}
+.totop:hover{background:var(--white)}
+.totop svg{width:16px;height:16px;fill:var(--white)}
+.totop:hover svg{fill:var(--btn-dark)}
+
+.toast{
+  position:fixed;left:50%;transform:translate(-50%,16px);
+  bottom:calc(24px + env(safe-area-inset-bottom, 0px));z-index:60;
+  background:var(--dark-surface);color:var(--white);
+  font-family:var(--body);font-weight:400;font-size:16px;line-height:25px;
+  padding:10px 24px;border-radius:30px;opacity:0;pointer-events:none;transition:.3s;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:1024px){
+  .utility{justify-content:center}
+  .utility-nav{justify-content:center}
+  .navstrip{min-height:53px}
+  .mainnav{justify-content:center;flex-wrap:wrap}
+  .mainnav a{padding:18px 16px}
+  .mainnav a::after{left:16px;right:16px;bottom:10px}
+  .grid{gap:40px 20px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:48px 64px}
+  .footer-newsletter{grid-column:1/-1}
+}
+@media (max-width:1180px) and (min-width:901px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+/* Designed for desktop. Below the two-column threshold the sidebar simply stacks above the
+   feed so nothing clips or scrolls sideways. */
+@media (max-width:900px){
+  .feedgrid{grid-template-columns:1fr;gap:34px}
+  .sidebar{position:static;gap:18px;max-height:none;overflow:visible;padding-right:0}
+  .catlist{flex-direction:row;flex-wrap:wrap}
+  .cat{width:auto;border-color:var(--mint)}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .recent-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  .grid{grid-template-columns:1fr}
+  .related-grid,.recent-list{grid-template-columns:1fr}
+  .mainnav{gap:0}
+  .mainnav a{padding:16px 12px;font-size:12px;line-height:17.14px}
+  .mainnav a::after{left:12px;right:12px;bottom:8px}
+  .footer{padding-top:48px}
+  .footer-logo{margin-bottom:44px}
+  .footer-grid{grid-template-columns:1fr;gap:42px}
+  .footer-newsletter{grid-column:auto}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ SITE CHROME ============ -->
+<header>
+  <div class="utilitybar">
+  <div class="band utility">
+    <nav class="utility-nav" aria-label="Utility">
+      <a href="#">Home</a><a href="#">About</a><a href="#">Index</a><a href="#">Membership</a>
+    </nav>
+    <div class="utility-right">
+      <div class="social" aria-label="Follow King of Tarts">
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5h1.65V3.6c-.29-.04-1.27-.12-2.41-.12-2.38 0-4.01 1.45-4.01 4.12v2.3H7.6V13h2.68v8h3.22z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 7.3A4.7 4.7 0 1 0 16.7 12 4.7 4.7 0 0 0 12 7.3zm0 7.75A3.05 3.05 0 1 1 15.05 12 3.05 3.05 0 0 1 12 15.05zM16.9 6a1.1 1.1 0 1 0 1.1 1.1A1.1 1.1 0 0 0 16.9 6zM12 4.6c2.4 0 2.7 0 3.65.05a5 5 0 0 1 1.68.31 3 3 0 0 1 1.71 1.71 5 5 0 0 1 .31 1.68c.05.95.05 1.24.05 3.65s0 2.7-.05 3.65a5 5 0 0 1-.31 1.68 3 3 0 0 1-1.71 1.71 5 5 0 0 1-1.68.31c-.95.05-1.24.05-3.65.05s-2.7 0-3.65-.05a5 5 0 0 1-1.68-.31 3 3 0 0 1-1.71-1.71 5 5 0 0 1-.31-1.68C4.6 14.7 4.6 14.4 4.6 12s0-2.7.05-3.65a5 5 0 0 1 .31-1.68 3 3 0 0 1 1.71-1.71 5 5 0 0 1 1.68-.31C9.3 4.6 9.6 4.6 12 4.6M12 3c-2.44 0-2.75 0-3.71.06a6.6 6.6 0 0 0-2.19.42 4.6 4.6 0 0 0-2.62 2.62 6.6 6.6 0 0 0-.42 2.19C3 9.25 3 9.56 3 12s0 2.75.06 3.71a6.6 6.6 0 0 0 .42 2.19 4.6 4.6 0 0 0 2.62 2.62 6.6 6.6 0 0 0 2.19.42C9.25 21 9.56 21 12 21s2.75 0 3.71-.06a6.6 6.6 0 0 0 2.19-.42 4.6 4.6 0 0 0 2.62-2.62 6.6 6.6 0 0 0 .42-2.19C21 14.75 21 14.44 21 12s0-2.75-.06-3.71a6.6 6.6 0 0 0-.42-2.19 4.6 4.6 0 0 0-2.62-2.62 6.6 6.6 0 0 0-2.19-.42C14.75 3 14.44 3 12 3z"/></svg></a>
+        <a href="#" aria-label="Pinterest"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-3.28 17.38c-.08-.7-.15-1.78.03-2.55l1.03-4.37s-.26-.53-.26-1.3c0-1.22.71-2.13 1.59-2.13.75 0 1.11.56 1.11 1.24 0 .75-.48 1.88-.73 2.93-.2.88.44 1.6 1.31 1.6 1.58 0 2.79-1.66 2.79-4.06 0-2.12-1.53-3.61-3.7-3.61a3.84 3.84 0 0 0-4 3.85 3.46 3.46 0 0 0 .66 2.03.27.27 0 0 1 .06.26c-.07.28-.22.88-.25 1-.04.17-.13.2-.3.12-1.13-.52-1.83-2.16-1.83-3.48 0-2.83 2.06-5.43 5.93-5.43 3.11 0 5.53 2.22 5.53 5.18 0 3.09-1.95 5.58-4.65 5.58a2.4 2.4 0 0 1-2.06-1.03l-.56 2.14a10 10 0 0 1-1.12 2.36A9 9 0 1 0 12 3z"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.76-1.77C18.25 5 12 5 12 5s-6.25 0-7.84.43A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.76 1.77C5.75 19 12 19 12 19s6.25 0 7.84-.43a2.5 2.5 0 0 0 1.76-1.77A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3z"/></svg></a>
+      </div>
+      <label class="utility-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2a8 8 0 1 0 4.9 14.32l5.39 5.39 1.42-1.42-5.39-5.39A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/></svg>
+        <input type="search" id="sitesearch" placeholder="Looking for something ? Search away?" aria-label="Search the site">
+      </label>
+    </div>
+  </div>
+  </div>
+
+  <div class="headerband">
+    <div class="logoband">
+      <img src="assets/brand/logo.png" alt="King of Tarts" width="768" height="158">
+      <p class="tagline">Baking Joy for Every Table</p>
+    </div>
+
+    <nav class="navstrip" aria-label="Main">
+      <div class="band mainnav">
+        <a href="#">Baking for Every Body</a>
+        <a href="#" aria-current="page">Recipes</a>
+        <a href="#">Ingredient Swaps</a>
+        <a href="#">Baking Tips</a>
+        <a href="#">About</a>
+        <a href="#">Index</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ============ ARCHIVE HERO ============ -->
+  <section class="hero">
+    <div class="band hero-inner">
+      <p class="kicker">Category</p>
+      <h1>Recipes</h1>
+    </div>
+  </section>
+
+  <!-- ============ FEED ============ -->
+  <section class="band feed">
+    <div class="feedgrid">
+
+      <aside class="sidebar">
+        <div class="toolsearch">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2a8 8 0 1 0 4.9 14.32l5.39 5.39 1.42-1.42-5.39-5.39A8 8 0 0 0 10 2zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12z"/></svg>
+          <input type="search" id="q" placeholder="Search recipes…" aria-label="Search recipes">
+          <button class="clear" id="qclear" type="button" aria-label="Clear search">
+            <svg viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          </button>
+        </div>
+        <div class="side-section">
+          <h2 class="side-title">Categories</h2>
+          <ul class="catlist" id="chips" role="group" aria-label="Filter by category"></ul>
+        </div>
+        <div class="side-section">
+          <h2 class="side-title">Recent Posts</h2>
+          <ul class="recent-list" id="sideRecent"></ul>
+        </div>
+      </aside>
+
+      <div class="feedmain">
+        <div class="resultline">
+          <span><b id="count">40</b> recipes shown</span>
+          <button class="reset" id="reset" type="button">Clear all filters</button>
+        </div>
+
+        <div class="grid" id="grid"></div>
+
+        <div class="empty" id="empty">
+          <div class="mark">&#8212;</div>
+          <h3>Nothing matches that yet</h3>
+          <p>Try a shorter word, or clear the filters to see every recipe in the archive.</p>
+          <button class="btn btn-b" type="button" id="emptyReset">Clear filters</button>
+        </div>
+
+        <div id="sentinel"></div>
+
+        <div class="loadstate" id="loader">
+          <div class="spinner" aria-hidden="true"></div>
+          <span>Bringing out the next batch</span>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="endcap" id="endcap">
+      <h3>That is the whole archive</h3>
+      <p>Forty recipes, every one tested. New bakes land roughly every week — be the first to get them.</p>
+      <a class="btn btn-a" href="#">Join the kitchen</a>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="band">
+    <div class="footer-logo">
+      <img src="assets/brand/logo.png" alt="King of Tarts" width="768" height="158">
+    </div>
+    <div class="footer-grid">
+      <div>
+        <h4>Main Menu</h4>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Recipes</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Membership</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#">Baking Tips</a></li>
+          <li><a href="#">Ingredient Swaps</a></li>
+          <li><a href="#">Index</a></li>
+          <li><a href="#">Account</a></li>
+          <li><a href="#">Login</a></li>
+        </ul>
+      </div>
+      <div class="footer-newsletter" role="group" aria-label="Newsletter signup preview">
+        <input type="email" placeholder="Your Email Address" aria-label="Your Email Address" readonly>
+        <label class="footer-consent">
+          <input type="checkbox" disabled>
+          <span>I agree to receive monthly recipe newsletters via email</span>
+        </label>
+        <button class="footer-subscribe" type="button" disabled>Subscribe</button>
+      </div>
+    </div>
+    <div class="footer-base">
+      <span>&copy; 2026 King Of Tarts. All Rights Reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<button class="totop" id="totop" type="button" aria-label="Back to top">
+  <svg viewBox="0 0 24 24"><path d="M12 4 4 13h5v7h6v-7h5z"/></svg>
+</button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var GF = "Gluten-Free Baking",
+      HU = "Hungarian/ European baking",
+      TC = "Tarts & Custards",
+      EB = "Everyday Bakes",
+      CI = "Chocolate and indulgent",
+      VB = "Vegan Baking",
+      BS = "Baking Science";
+
+  var RECIPES = [
+    {t:"Chocolate Raspberry Torte",i:"r01.jpg",c:[GF],d:"2026-10-14",u:"https://kingoftarts.net/chocolate-raspberry-torte/",e:"Flourless, impressive and surprisingly simple. Baked in two stages so the raspberries sit on set batter instead of sinking."},
+    {t:"Frangipani Pear Tart",i:"r02.jpg",c:[TC],d:"2026-10-03",u:"https://kingoftarts.net/frangipani-pear-tart/",e:"One of those recipes that has followed me through my whole baking career — fanned pears, toasted almonds, apricot glaze."},
+    {t:"Hungarian Quark &amp; Cherry Strudel",i:"r03.jpg",c:[HU],d:"2026-09-28",u:"https://kingoftarts.net/hungarian-quark-cherry-strudel/",e:"Hand-stretched strudel dough learned in my apprenticeship, filled with lemon-scented quark and sour cherries."},
+    {t:"Passion fruit Curd Tart",i:"r04.jpg",c:[TC],d:"2026-09-22",u:"https://kingoftarts.net/passionfruit-curd-tart/",e:"A crisp buttery shell against smooth, intensely flavoured curd — sharp tropical acidity cutting through the richness."},
+    {t:"Sacher Caramel Chocolate Mousse Log",i:"r05.jpg",c:[CI,GF],d:"2026-09-15",u:"https://kingoftarts.net/sacher-caramel-chocolat-mousse-log/",e:"Layers of chocolate sponge, smooth mousse and a shiny glaze, cut to show every band clearly."},
+    {t:"Apple Normandy Tart",i:"r06.jpg",c:[CI,TC],d:"2026-09-12",u:"https://kingoftarts.net/apple-normandy-tart/",e:"Three pastry elements in one dessert: crisp shortcrust, softly caramelised apples, and a cream custard scented with Calvados."},
+    {t:"Piedmont Dacquoise Chocolate Mousse",i:"r07.jpg",c:[CI,GF],d:"2026-09-03",u:"https://kingoftarts.net/piedmont-dacquoise-chocolate-mousse/",e:"A cake I first made during my apprenticeship, and still a beautiful example of classic pastry technique."},
+    {t:"Sour Cherry Streusel Flan",i:"r08.jpg",c:[HU],d:"2026-08-22",u:"https://kingoftarts.net/sour-cherry-streusel-flan/",e:"Sour cherries, curd cheese and buttery streusel. The sharp fruit cuts straight through the creamy filling."},
+    {t:"Hungarian Chestnut Torte",i:"r09.jpg",c:[HU],d:"2026-08-13",u:"https://kingoftarts.net/hungarian-chestnut-torte/",e:"Chestnuts have always had a place in Hungarian baking. This is my grandmother's, filled with chestnut cream and ganache."},
+    {t:"Citrus Basil Almond Cake",i:"r10.jpg",c:[GF],d:"2026-08-07",u:"https://kingoftarts.net/citrus-basil-almond-cake/",e:"Naturally gluten-free and wonderfully moist, using the entire fruit — peel, pith and all — for a deep citrus note."},
+    {t:"Polenta and Date Slice",i:"r11.jpg",c:[EB],d:"2026-08-02",u:"https://kingoftarts.net/polenta-and-date-slice/",e:"A traditional slice where simple ingredients create an exceptional result. Comforting, textured and easy to keep."},
+    {t:"Chocolate Hazelnut Torte",i:"r12.jpg",c:[GF,HU],d:"2026-07-27",u:"https://kingoftarts.net/chocolate-hazelnut-torte/",e:"Some recipes become part of a family's story. This roasted hazelnut torte slice is one that gets passed on."},
+    {t:"Golden Pinenut Frangipane Tart",i:"r13.jpg",c:[TC],d:"2026-07-17",u:"recipe-single.html",e:"Revisiting a recipe that stayed with me since the beginning — golden pine nuts over classic frangipane."},
+    {t:"Hungarian Sour Cherry Cake",i:"r14.jpg",c:[HU],d:"2026-07-13",u:"https://kingoftarts.net/hungarian-sour-cherry-cake/",e:"Whipped eggs and fresh sour cherries proving that simple ingredients can create something extraordinary."},
+    {t:"Hazelnut Caramel &amp; Chocolate Tart",i:"r15.jpg",c:[TC],d:"2026-07-06",u:"https://kingoftarts.net/hazelnut-caramel-and-chocolate-tart/",e:"Learned during my pastry apprenticeship, where mastering the caramel was the whole point of the exercise."},
+    {t:"Chocolate Roasted Walnut Torte",i:"r16.jpg",c:[GF,HU],d:"2026-06-30",u:"https://kingoftarts.net/chocolate-roasted-walnut-torte/",e:"One of my Nana's treasured recipes, passed down through the family like many traditional Hungarian cakes."},
+    {t:"Hungarian Apple Cake",i:"r17.jpg",c:[HU],d:"2026-06-16",u:"https://kingoftarts.net/hungarian-apple-cake/",e:"More than a recipe — a treasured family tradition that appeared on the table for as long as I can remember."},
+    {t:"Esterh&aacute;zy Torte",i:"r18.jpg",c:[HU],d:"2026-06-09",u:"https://kingoftarts.net/esterhazy-torte/",e:"Hazelnut dacquoise, rich buttercream, apricot glaze and that signature feathered fondant top."},
+    {t:"Whole Mandarin and Almond Cake",i:"r19.jpg",c:[GF],d:"2026-06-03",u:"https://kingoftarts.net/whole-mandarin-and-almond-cake/",e:"Some cakes are desserts, others tell a story. Whole boiled mandarins turned into something remarkable."},
+    {t:"Carrot Apple &amp; Walnut Loaf",i:"r20.jpg",c:[EB],d:"2026-05-27",u:"https://kingoftarts.net/carrot-apple-walnut-loaf/",e:"Warm cinnamon, baked apple and carrot, cooling on the bench. The timeless everyday loaf."},
+    {t:"Hungarian Walnut Lemon Slice",i:"r21.jpg",c:[HU],d:"2026-05-22",u:"https://kingoftarts.net/hungarian-walnut-lemon-slice/",e:"Rich, buttery and nostalgic — traditional European baking that feels comforting and elegant at once."},
+    {t:"Cheese &amp; Parsley Scones",i:"r22.jpg",c:[EB],d:"2026-05-14",u:"https://kingoftarts.net/cheese-and-parsley-scones/",e:"Crisp golden tops, soft fluffy centres and pockets of melted parmesan, straight from the oven."},
+    {t:"Plain and Date Scones",i:"r23.jpg",c:[EB],d:"2026-05-12",u:"https://kingoftarts.net/plain-and-date-scones-2/",e:"The baseline scone, done properly, plus a date version from the same dough. Light, tall and tender."},
+    {t:"Hazelnut Orange Torte",i:"r24.jpg",c:[GF],d:"2026-05-05",u:"https://kingoftarts.net/hazelnut-orange-torte/",e:"Roasted nuts, citrus brightness and chocolate depth coming together in careful balance."},
+    {t:"Chocolate Orange Cake",i:"r25.jpg",c:[EB],d:"2026-04-29",u:"https://kingoftarts.net/chocolate-orange-cake/",e:"Soft and rich, with citrus and chocolate balanced in every bite. An everyday cake that reads as a dessert."},
+    {t:"Rhubarb Ricotta Tart",i:"r26.jpg",c:[TC],d:"2026-04-23",u:"https://kingoftarts.net/rhubarb-ricotta-tart/",e:"Rustic fruit meets creamy indulgence — buttery shortcrust, light ricotta filling, vibrant roasted rhubarb."},
+    {t:"Flourless Chocolate Cake",i:"r27.jpg",c:[GF],d:"2026-04-12",u:"https://kingoftarts.net/flourless-chocolate-cake/",e:"Rich chocolate flavour with a light, almost souffl&eacute;-like texture from melted chocolate, butter and almond meal."},
+    {t:"Chocolate Almond Torte",i:"r28.jpg",c:[GF],d:"2026-04-10",u:"https://kingoftarts.net/chocolate-almond-torte/",e:"Deep chocolate flavour with a light, delicate crumb, built on dark couverture and almond meal."},
+    {t:"Hot Cross Buns",i:"r29.jpg",c:[EB],d:"2026-04-05",u:"https://kingoftarts.net/hot-cross-buns/",e:"More than an Easter tradition — a clear example of how baking science turns simple ingredients soft and fragrant."},
+    {t:"Italian Ricotta Easter Tart",i:"r30.jpg",c:[TC],d:"2026-04-03",u:"https://kingoftarts.net/italian-ricotta-easter-tart/",e:"A delicate shortcrust base against rich, creamy ricotta — beautifully balanced as the filling sets."},
+    {t:"Plum Sour Cream Cake",i:"r31.jpg",c:[HU],d:"2026-03-31",u:"https://kingoftarts.net/blood-plum-sour-cream-cake/",e:"Deeply nostalgic seasonal baking: simple, abundant, and made to use up whatever the tree gave you."},
+    {t:"Lumberjack Cake",i:"r32.png",c:[EB],d:"2026-03-16",u:"https://kingoftarts.net/lumberjack-cake-date-apple-coconut/",e:"Sweet dates, fresh apples and a warm coconut topping. Simple-looking, but the ingredients do real work."},
+    {t:"Poppy Seed Cake",i:"r33.png",c:[HU],d:"2026-03-06",u:"https://kingoftarts.net/poppy-seed-cake/",e:"A traditional bake showing how simple ingredients build a moist, aromatic cake with a delicate crumb."},
+    {t:"Every day Chocolate Cake",i:"r34.jpg",c:[EB],d:"2026-03-02",u:"https://kingoftarts.net/everyday-chocolate-cake-raspberry-ganache/",e:"It looks simple, but every ingredient is balanced to stay deeply chocolatey and exceptionally moist."},
+    {t:"Valentines day Mousse Hearts",i:"r35.jpg",c:[CI],d:"2026-02-24",u:"https://kingoftarts.net/valentines-day-mousse-hearts/",e:"Beneath the glossy red glaze sits a carefully balanced dessert built on proper mousse technique."},
+    {t:"Sacher Torte",i:"r36.jpg",c:[HU],d:"2026-02-20",u:"https://kingoftarts.net/sacher-torte/",e:"Created in Vienna in 1832 and made for royalty — quiet elegance and deep tradition in one cake."},
+    {t:"Sesame Peanut Bubble slice",i:"r37.jpg",c:[EB],d:"2026-02-16",u:"https://kingoftarts.net/sesame-peanut-bubble-slice/",e:"Everyday pantry ingredients, but the balance of fat, sugar and crunch is doing careful work underneath."},
+    {t:"Toasted Muesli",i:"r38.jpg",c:[EB],d:"2026-02-09",u:"https://kingoftarts.net/toasted-muesli/",e:"Grains, nuts, seeds and fruit — its success comes from how they balance fat, sugar and toasting time."},
+    {t:"Low GI Apple and Berry Muffins",i:"r39.jpg",c:[EB],d:"2026-02-08",u:"https://kingoftarts.net/low-gi-apple-and-berry-muffins/",e:"A soft, fruit-rich breakfast muffin formulated to support steadier energy rather than a sugar spike."},
+    {t:"Apple and Date Weetbix Protein Slice",i:"r40.jpg",c:[EB],d:"2026-01-23",u:"https://kingoftarts.net/apple-and-date-weetbix-protein-slice-no-refined-sugar/",e:"Naturally sweetened and fibre-rich. Fruit does the sweetening; Weet-Bix adds wholegrain structure."}
+  ];
+
+  /* The live site exposes seven specific categories plus Recipes as the all-posts option. */
+  var SCIENCE_POSTS = [
+    "Chocolate Raspberry Torte",
+    "Cheese &amp; Parsley Scones",
+    "Hot Cross Buns",
+    "Sesame Peanut Bubble slice",
+    "Toasted Muesli",
+    "Low GI Apple and Berry Muffins",
+    "Apple and Date Weetbix Protein Slice"
+  ];
+  RECIPES.forEach(function(r){
+    if(SCIENCE_POSTS.indexOf(r.t) > -1 && r.c.indexOf(BS) === -1) r.c.push(BS);
+    if(r.t === "Apple and Date Weetbix Protein Slice" && r.c.indexOf(VB) === -1) r.c.push(VB);
+  });
+
+  var ORDER = [BS, CI, EB, GF, HU, TC, VB];
+  var DISPLAY_ORDER = ["", BS, CI, EB, GF, HU, TC, VB];
+  var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var FIRST_BATCH = 12, NEXT_BATCH = 8;
+
+  var state = { q:"", cats:[], shown:0, results:[], loading:false, relatedDone:false };
+
+  var $ = function(id){ return document.getElementById(id); };
+  var grid = $("grid"), chipsEl = $("chips"), loader = $("loader"),
+      endcap = $("endcap"), empty = $("empty"), countEl = $("count"),
+      resetBtn = $("reset"), toastEl = $("toast");
+
+  function fmtDate(iso){
+    var p = iso.split("-");
+    return parseInt(p[2],10) + " " + MONTHS[parseInt(p[1],10)-1] + " " + p[0];
+  }
+  function shortDate(iso){
+    var p = iso.split("-");
+    return MONTHS[parseInt(p[1],10)-1].slice(0,3) + " " + parseInt(p[2],10) + ", " + p[0];
+  }
+  function plain(html){ var d = document.createElement("div"); d.innerHTML = html; return d.textContent || ""; }
+  function shortCat(c){ return c.replace("Hungarian/ European baking","Hungarian &amp; European"); }
+
+  function counts(){
+    var m = {};
+    ORDER.forEach(function(c){ m[c] = 0; });
+    RECIPES.forEach(function(r){ r.c.forEach(function(c){ if(m[c] !== undefined) m[c]++; }); });
+    return m;
+  }
+
+  function buildChips(){
+    var m = counts(), html = "";
+    DISPLAY_ORDER.forEach(function(c){
+      var label = c === "" ? "Recipes" : shortCat(c);
+      var number = c === "" ? RECIPES.length : m[c];
+      var pressed = c === "" ? "true" : "false";
+      html += '<li><button class="cat" type="button" data-cat="' + c + '" aria-pressed="' + pressed + '"><span>' + label + '</span><span class="n">' + number + '</span></button></li>';
+    });
+    chipsEl.innerHTML = html;
+  }
+
+  function syncChips(){
+    var all = chipsEl.querySelectorAll(".cat");
+    for(var i=0;i<all.length;i++){
+      var c = all[i].getAttribute("data-cat");
+      var on = c === "" ? state.cats.length === 0 : state.cats.indexOf(c) > -1;
+      all[i].setAttribute("aria-pressed", on ? "true" : "false");
+    }
+  }
+
+  function compute(){
+    var q = state.q.trim().toLowerCase();
+    var out = RECIPES.filter(function(r){
+      if(state.cats.length && !r.c.some(function(c){ return state.cats.indexOf(c) > -1; })) return false;
+      if(!q) return true;
+      var hay = (plain(r.t) + " " + plain(r.e) + " " + r.c.join(" ")).toLowerCase();
+      return hay.indexOf(q) > -1;
+    });
+    out.sort(function(a,b){ return a.d > b.d ? -1 : 1; });   /* newest first */
+    return out;
+  }
+
+  function cardHTML(r, delay){
+    var cats = r.c.map(shortCat).join(' <span class="sep">&middot;</span> ');
+    var badges = "";
+    if(r.c.indexOf(GF) > -1) badges += '<span class="badge">Gluten-free</span>';
+    if(r.c.indexOf(VB) > -1) badges += '<span class="badge">Vegan</span>';
+    if(r.c.indexOf(CI) > -1) badges += '<span class="badge amber">Indulgent</span>';
+
+    return '' +
+      '<article class="card" style="animation-delay:' + delay + 'ms">' +
+        '<div class="card-media">' +
+          '<a href="' + r.u + '" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">' +
+            '<img src="assets/recipes/' + r.i + '" alt="' + plain(r.t) + '" loading="lazy" width="1140" height="660">' +
+          '</a>' +
+          (badges ? '<div class="badges">' + badges + '</div>' : '') +
+          '<button class="card-share" type="button" data-share="' + plain(r.t) + '" aria-label="Share ' + plain(r.t) + '">' +
+            '<svg viewBox="0 0 24 24"><path d="M18 16.1a3 3 0 0 0-2 .8l-7.1-4.1a3 3 0 0 0 0-1.6L16 7.1a3 3 0 1 0-1-2.1 3 3 0 0 0 .1.6L8 9.7a3 3 0 1 0 0 4.6l7.1 4.1a3 3 0 0 0-.1.7 3 3 0 1 0 3-3z"/></svg>' +
+          '</button>' +
+        '</div>' +
+        '<div class="card-body">' +
+          '<p class="card-cats">' + cats + '</p>' +
+          '<h3><a href="' + r.u + '" target="_blank" rel="noopener">' + r.t + '</a></h3>' +
+          '<p class="card-meta">' + shortDate(r.d) +
+            '<span class="sep">&middot;</span>by Debbie' +
+            '<span class="sep">&middot;</span>' +
+            '<a href="' + r.u + '#comments" target="_blank" rel="noopener">Leave a comment</a>' +
+          '</p>' +
+          '<p class="card-excerpt">' + r.e + '</p>' +
+          '<a class="btn btn-c card-cta" href="' + r.u + '" target="_blank" rel="noopener">View Recipe</a>' +
+        '</div>' +
+      '</article>';
+  }
+
+  function relatedHTML(){
+    var related = state.results.slice(1,4);
+    return '<section class="related-posts" aria-labelledby="relatedHeading">' +
+      '<h2 id="relatedHeading">Related posts</h2>' +
+      '<div class="related-grid">' + related.map(function(r){
+        return '<article class="related-card"><a href="' + r.u + '" target="_blank" rel="noopener">' +
+          '<img src="assets/recipes/' + r.i + '" alt="" loading="lazy" width="1140" height="660">' +
+          '<span>' + r.t + '</span></a></article>';
+      }).join("") + '</div></section>';
+  }
+
+  function skeletonHTML(n){
+    var s = "";
+    for(var i=0;i<n;i++){
+      s += '<article class="card skel" aria-hidden="true">' +
+             '<div class="card-media"></div>' +
+             '<div class="card-body">' +
+               '<div class="ln w45" style="height:12px;margin-bottom:16px"></div>' +
+               '<div class="ln w90" style="height:24px;margin-bottom:8px"></div>' +
+               '<div class="ln w70" style="height:24px;margin-bottom:14px"></div>' +
+               '<div class="ln w45" style="height:14px;margin-bottom:21px"></div>' +
+               '<div class="ln w90" style="height:14px;margin-bottom:11px"></div>' +
+               '<div class="ln w90" style="height:14px;margin-bottom:11px"></div>' +
+               '<div class="ln w70" style="height:14px;margin-bottom:28px"></div>' +
+               '<div class="ln" style="height:47px;width:160px;border-radius:30px"></div>' +
+             '</div>' +
+           '</article>';
+    }
+    return s;
+  }
+
+  function append(n){
+    var slice = state.results.slice(state.shown, state.shown + n);
+    if(!slice.length) return;
+    var html = "";
+    slice.forEach(function(r, idx){
+      var absolute = state.shown + idx;
+      if(absolute === 3 && !state.relatedDone && state.results.length > 3){
+        html += relatedHTML();
+        state.relatedDone = true;
+      }
+      html += cardHTML(r, Math.min(idx * 45, 320));
+    });
+    grid.insertAdjacentHTML("beforeend", html);
+    state.shown += slice.length;
+    updateEnd();
+  }
+
+  function updateEnd(){
+    var done = state.shown >= state.results.length;
+    endcap.classList.toggle("on", done && state.results.length > 0);
+  }
+
+  function render(){
+    state.results = compute();
+    state.shown = 0;
+    state.relatedDone = false;
+    grid.innerHTML = "";
+    endcap.classList.remove("on");
+
+    countEl.textContent = state.results.length;
+    empty.classList.toggle("on", state.results.length === 0);
+    resetBtn.classList.toggle("on", state.cats.length > 0 || state.q.trim() !== "");
+
+    append(FIRST_BATCH);
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    if(!entries[0].isIntersecting) return;
+    if(state.loading) return;
+    if(state.shown >= state.results.length) return;
+
+    state.loading = true;
+    loader.classList.add("on");
+    grid.insertAdjacentHTML("beforeend", skeletonHTML(Math.min(4, state.results.length - state.shown)));
+
+    setTimeout(function(){
+      var skels = grid.querySelectorAll(".skel");
+      for(var i=0;i<skels.length;i++) skels[i].remove();
+      loader.classList.remove("on");
+      append(NEXT_BATCH);
+      state.loading = false;
+    }, 620);
+  }, { rootMargin: "500px 0px" });
+  io.observe($("sentinel"));
+
+  var debounce;
+  $("q").addEventListener("input", function(e){
+    var v = e.target.value;
+    $("qclear").classList.toggle("on", v.length > 0);
+    clearTimeout(debounce);
+    debounce = setTimeout(function(){ state.q = v; render(); }, 180);
+  });
+  $("qclear").addEventListener("click", function(){
+    $("q").value = ""; $("qclear").classList.remove("on");
+    state.q = ""; render(); $("q").focus();
+  });
+  $("sitesearch").addEventListener("keydown", function(e){
+    if(e.key === "Enter"){
+      e.preventDefault();
+      $("q").value = e.target.value;
+      $("qclear").classList.toggle("on", e.target.value.length > 0);
+      state.q = e.target.value;
+      render();
+      $("q").scrollIntoView({ behavior:"smooth", block:"center" });
+    }
+  });
+
+  chipsEl.addEventListener("click", function(e){
+    var chip = e.target.closest(".cat");
+    if(!chip) return;
+    var cat = chip.getAttribute("data-cat");
+    if(cat === ""){
+      state.cats = [];
+    } else {
+      var at = state.cats.indexOf(cat);
+      if(at > -1) state.cats.splice(at, 1); else state.cats.push(cat);
+    }
+    syncChips();
+    render();
+  });
+
+  function clearAll(){
+    state.q = ""; state.cats = [];
+    $("q").value = ""; $("qclear").classList.remove("on");
+    syncChips(); render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  resetBtn.addEventListener("click", clearAll);
+  $("emptyReset").addEventListener("click", clearAll);
+
+  var toastTimer;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("on"); }, 2400);
+  }
+  document.addEventListener("click", function(e){
+    var s = e.target.closest("[data-share]");
+    if(s){ toast("Link to “" + s.getAttribute("data-share") + "” copied"); }
+  });
+  var totop = $("totop");
+  var onScroll = function(){
+    var y = window.scrollY || document.documentElement.scrollTop;
+    totop.classList.toggle("on", y > 900);
+  };
+  window.addEventListener("scroll", onScroll, { passive:true });
+  totop.addEventListener("click", function(){ window.scrollTo({ top:0, behavior:"smooth" }); });
+
+  (function(){
+    var recent = RECIPES.slice().sort(function(a,b){ return a.d > b.d ? -1 : 1; }).slice(0,4);
+    $("sideRecent").innerHTML = recent.map(function(r){
+      return '<li class="recent-item"><a href="' + r.u + '" target="_blank" rel="noopener">' +
+        '<img class="recent-thumb" src="assets/recipes/' + r.i + '" alt="" loading="lazy" width="1140" height="660">' +
+        '<span class="recent-copy"><span class="recent-title">' + r.t + '</span>' +
+        '<span class="recent-date">' + fmtDate(r.d) + '</span></span></a></li>';
+    }).join("");
+  })();
+
+  buildChips();
+  render();
+  onScroll();
+})();
+</script>
+</body>
+</html>
